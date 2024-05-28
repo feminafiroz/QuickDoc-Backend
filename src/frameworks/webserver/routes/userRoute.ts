@@ -38,6 +38,9 @@ const userRoutes = () => {
     router.get("/doctors", controller.doctorPage)
     router.get("/doctor/:id",controller.doctorDetails)
     router.get('/department/list', controller.listDepartmentsHandler);
+    router.get("/profile", authenticateUser, controller.userProfile);
+    router.patch("/profile/edit", authenticateUser, controller.updateUserInfo);
+
 
 
 
