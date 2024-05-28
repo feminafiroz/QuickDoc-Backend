@@ -20,6 +20,7 @@ import {doctorRepositoryMongodbType} from '../frameworks/database/repositories/d
 import { GoogleResponseType } from "../types/GoogleResponseType";
 import { listDepartments } from "../app/use-cases/Admin/adminDepartment";
 import { IDepartmentRepository } from "../app/interfaces/departmentRepositoryInterface";
+import { getUserProfile, updateUser } from "../app/use-cases/user/readnupdate/profile";
 
 
 
@@ -197,6 +198,44 @@ const userController =(
     }
   };
 
+  //get : retrieve user profile 
+  const userProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      console.log(userId,'userid')
+      const user  = await getUserProfile(
+        userId,
+        dbRepositoryUser
+      );
+      
+      res.status(200).json({ success: true, user});
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  //patch : update user profile 
+  const updateUserInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.user;
+      const updateData = req.body;
+      const user = await updateUser(userId, updateData, dbRepositoryUser);
+      res
+        .status(200)
+        .json({ success: true, user, message: "Profile updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 
     return {
         registerUser,
@@ -208,7 +247,9 @@ const userController =(
         googleSignIn,
         doctorPage,
         doctorDetails,
-        listDepartmentsHandler
+        listDepartmentsHandler,
+        userProfile,
+        updateUserInfo
     };
 }
 
